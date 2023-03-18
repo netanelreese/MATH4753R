@@ -8,21 +8,6 @@
 #'
 #' @examples
 ntickets = function(N, gamma,p){
-  x = seq(0, N, by = 1)
-  x2 <- seq(0, N, by = 0.1)
-
-  nd <- 1 - gamma - pbinom(N/2,x,p)
-  nc <- 1 - gamma - pnorm(N/2, x2 * p, sqrt(x2 * p * (1 - p)), lower.tail = TRUE)
-
-
-  dmin = which.min(abs(nd))
-  cmin <- min(nc)
-
-  results <- list(nd = nd[dmin],
-                  nc = nc[cmin],
-                  N = N, p = p, gamma = gamma)
-
-
   binom <- function(n) {
     nd <- 1 - gamma - pbinom(N/2,round(n),p)
   }
@@ -30,14 +15,28 @@ ntickets = function(N, gamma,p){
     nc <- 1 - gamma - pnorm(N/2, n * p, sqrt(n * p * (1 - p)))
   }
 
+  x = seq.int(0, N, 1L)
+
+  nd <- 1 - gamma - pbinom(N/2,round(x),p)
+  nc <- 1 - gamma - pnorm(N/2, x * p, sqrt(x * p * (1 - p)))
+
+  # Find the optimal minimum of obj
+  nc <- optimize(norm, interval = c(204, N/2+20))
+
+  dmin = which.min(abs(nd))
+  cmin = nc$minimum
+
+
+  #layout(matrix(2:1, nr=2,nc=1))
+
 
   plot(binom(x), xlim = c(N/2,N/2+20),ylim=c(0,1),xlab="n",ylab = "Objective
        ",type='b',pch=21, main=paste("Objective v. n to find Optimal Tickets Sold\n(",dmin, "), gamma: ",gamma,", N: ", N, ", Discrete"))
   points(dmin,nd[dmin], pch = 21, bg = "Red", cex = 2)
 
 
-  curve(norm,xlim = c(N/2,N/2+20),ylim=c(0,1),xlab="n",ylab = "Objective
+  curve(norm(x),xlim = c(N/2,N/2+20),ylim=c(0,1),xlab="n",ylab = "Objective
        ", main=paste("Objective v. n to find Optimal Tickets Sold\n(",cmin, "), gamma: ",gamma,", N: ", N, ", Continuous"))  # add a continuous plot of f to the existing plot
-  points(cmin / p, nc[cmin], pch = 21, bg = "Blue", cex = 2)
-  print(results)
+  points(nc$minimum,nc$objective, pch = 21, bg = "Red", cex = 2)
+  print(list(nd=dmin,nc=cmin, N=N, p=p, gamma=gamma))
 }
