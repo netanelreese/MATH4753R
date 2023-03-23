@@ -1,5 +1,5 @@
 
-#' Title
+#' ntickets
 #'
 #' @param N number of seats on a flight
 #' @param gamma probibility that a flight will be overbooked

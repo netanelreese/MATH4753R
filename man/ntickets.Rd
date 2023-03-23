@@ -2,7 +2,7 @@
 % Please edit documentation in R/ntickets.R
 \name{ntickets}
 \alias{ntickets}
-\title{Title}
+\title{ntickets}
 \usage{
 ntickets(N, gamma, p)
 }
@@ -17,7 +17,7 @@ ntickets(N, gamma, p)
 list - a list containing nc the optimum number of tickets sold in a continuious manner, nd a distributed
 }
 \description{
-Title
+ntickets
 }
 \examples{
 ntickets(N = 200, gamma = .05,p = .95)
