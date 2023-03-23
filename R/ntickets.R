@@ -1,42 +1,37 @@
-#' nTickets
+
+#' Title
 #'
-#' @param mu
-#' @param sigma
+#' @param N number of seats on a flight
+#' @param gamma probibility that a flight will be overbooked
+#' @param p probability for a "show"
 #'
-#' @return
-#' @export
+#' @returns list - a list containing nc the optimum number of tickets sold in a continuious manner, nd a distributed
 #'
 #' @examples
+#' ntickets(N = 200, gamma = .05,p = .95)
 ntickets = function(N, gamma,p){
-  binom <- function(n) {
-    nd <- 1 - gamma - pbinom(N/2,round(n),p)
-  }
-  norm <- function(n) {
-    nc <- 1 - gamma - pnorm(N/2, n * p, sqrt(n * p * (1 - p)))
-  }
-
-  x = seq.int(0, N, 1L)
-
-  nd <- 1 - gamma - pbinom(N/2,round(x),p)
-  nc <- 1 - gamma - pnorm(N/2, x * p, sqrt(x * p * (1 - p)))
+  domain <- N:(N + round(0.1 * N))
+  nd <- 1 - gamma - pbinom(q = N, size = domain, prob = p) # discrete distribution
+  nc <- 1 - gamma - pnorm(N + 0.5,  domain * p, sqrt(domain * p * (1 - p))) # continuous distribution
 
   # Find the optimal minimum of obj
-  nc <- optimize(norm, interval = c(204, N/2+20))
+  d <- N
+  while(N != qbinom(1-gamma, d, p)){
+    d = d + 1
+  }
 
-  dmin = which.min(abs(nd))
-  cmin = nc$minimum
-
-
-  #layout(matrix(2:1, nr=2,nc=1))
-
-
-  plot(binom(x), xlim = c(N/2,N/2+20),ylim=c(0,1),xlab="n",ylab = "Objective
-       ",type='b',pch=21, main=paste("Objective v. n to find Optimal Tickets Sold\n(",dmin, "), gamma: ",gamma,", N: ", N, ", Discrete"))
-  points(dmin,nd[dmin], pch = 21, bg = "Red", cex = 2)
+  c <- which.min(abs(nc))
 
 
-  curve(norm(x),xlim = c(N/2,N/2+20),ylim=c(0,1),xlab="n",ylab = "Objective
-       ", main=paste("Objective v. n to find Optimal Tickets Sold\n(",cmin, "), gamma: ",gamma,", N: ", N, ", Continuous"))  # add a continuous plot of f to the existing plot
-  points(nc$minimum,nc$objective, pch = 21, bg = "Red", cex = 2)
-  print(list(nd=dmin,nc=cmin, N=N, p=p, gamma=gamma))
+
+  plot(domain, nd, type = 'b', main=paste("Objective Vs n to find optimal tickets sold\n", "(", d, ")", "gamma = ", gamma, "N = ", N, "discrete"), ylab = "Objective", pch = 16, col = "blue")
+  abline(h = 0, v = d, lwd = 2, col = "coral")
+
+  plot(domain, nc, type = 'l', main=paste("Objective Vs n to find optimal tickets sold\n", "(", domain[c], ")", "gamma = ", gamma, "N = ", N, "continuous"), ylab = "Objective", col = "red")
+  abline(h = 0, v = domain[c], col = "lavender", lwd = 2)
+
+  list <- list(nd=d,nc=c, N=N, p=p, gamma=gamma)
+  print(list)
+  return(list)
 }
+#ntickets(200, .05, .95)

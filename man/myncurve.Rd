@@ -7,8 +7,16 @@
 myncurve(mu, sigma, color, a)
 }
 \arguments{
-\item{sigma}{}
+\item{mu}{-  blah blah}
+
+\item{sigma}{- blooh blooh}
+}
+\value{
+- uhhh
 }
 \description{
 Title
+}
+\examples{
+- myncurve(1, 2, 4, "blue")
 }

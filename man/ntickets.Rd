@@ -2,13 +2,23 @@
 % Please edit documentation in R/ntickets.R
 \name{ntickets}
 \alias{ntickets}
-\title{nTickets}
+\title{Title}
 \usage{
 ntickets(N, gamma, p)
 }
 \arguments{
-\item{sigma}{}
+\item{N}{number of seats on a flight}
+
+\item{gamma}{probibility that a flight will be overbooked}
+
+\item{p}{probability for a "show"}
+}
+\value{
+list - a list containing nc the optimum number of tickets sold in a continuious manner, nd a distributed
 }
 \description{
-nTickets
+Title
+}
+\examples{
+ntickets(N = 200, gamma = .05,p = .95)
 }
